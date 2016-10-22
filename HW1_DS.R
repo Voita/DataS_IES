@@ -7,6 +7,7 @@
 set.seed(123)
 M <- matrix(
   c(
+    
     1:50 + rnorm(50, 0, 2),
     seq(1, 100, 2) + rnorm(50, 0, 5),
     50:1 + runif(50, -50, 50),
@@ -37,4 +38,68 @@ pairs(M)
 #    Use this function to calculate beta coefficients for the case where variable "a" from M.f is dependent 
 #    and the rest are independent variables (except the new factor variable which is left out).
 # f) OPTIONAL: Check the counts of and different average values of "a" for different factor levels (hint: table)
+
+
+# a) setting names
+colnames(M) <- c("a", "B", "C", "d", "E")
+
+# b) data frame M.F of columns a,C,d,E
+  #1st method
+q <- c(1,3:5)
+M.F. = data.frame(M[,q])
+
+  #2nd method 
+qq <- c("a", "C", "d", "E")
+M.F. = data.frame(M[,qq])
+
+  #3rd method
+qqq <- c(-2)
+M.F. = data.frame(M[,qqq])
+
+# c) subset such that "a" < 35
+M.F. <- subset(M.F., M.F.[,1] <35)
+
+#d) new variable
+  #adding new coumn
+  M.F.[,"fctrs"] <- c(1) 
+
+  #fal
+  i <- 2
+
+  for (i in 2:(dim(M.F.)[1]) ) {
+    if ( M.F.[["d"]][i] < M.F.[["d"]][i-1]){
+      M.F.[["fctrs"]][i] <- "fall"
+      }
+  }
+  
+  # less than or equal 190 & the rest equal inconclusive
+  i <- 1
+  for (i in 1:(dim(M.F.)[1]) ) {
+      if(M.F.[["fctrs"]][i] != "fall" && M.F.[["d"]][i] <=190  ){
+        M.F.[["fctrs"]][i] <- "smallbeg"
+      } else if (M.F.[["fctrs"]][i] != "fall") {
+        M.F.[["fctrs"]][i] <- "inconclusive"
+        
+      }
+  }
+
+
+M.F.
+# regression 
+  X = data.matrix(M.F.[c(2:4)])
+  y = data.matrix(M.F.[1])
+  
+ 
+
+
+  betacoeff <- function(X,y){
+    B = (t(X) %*% X)^(-1) %*% t(X) %*% y
+    colnames(B) = NULL
+    
+    return(B)
+}
+
+
+
+
 
